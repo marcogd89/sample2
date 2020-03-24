@@ -1,0 +1,6 @@
+applications:
+  - name: jh-human-api
+    memory: 128M
+    instances: 1
+    buildpack: nodejs_buildpack
+    command: node dist/server.js
