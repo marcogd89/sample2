@@ -15,8 +15,8 @@ describe('Unknown API route', () => {
   });
 
   it('should respond with a 200 when the endpoint is the base route', async () => {
-    const baseRequest = await request(app).get('/humanApiSessionService');
+    const baseRequest = await request(app).get('/CBNotification');
     expect(baseRequest.statusCode).toBe(200);
-    expect(baseRequest.body).toEqual({ title: 'Human API Service' });
+    expect(baseRequest.body).toEqual({ title: 'CB Notification API Service' });
   });
 });
