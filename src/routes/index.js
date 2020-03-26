@@ -25,10 +25,18 @@ router.post('/CBNotification', async (req, res) => {
 //  console.log(CBHOOK);
   
   let saleType;
-  if (jsonObj.lineItems[0].lineItemType='ORIGINAL') {
-      saleType="New Sale for " + jsonObj.vendor;    
+  //if (jsonObj.lineItems[0].lineItemType='ORIGINAL') {
+  logger.info(`${jsonObj.transactionType}`);
+  if (jsonObj.transactionType=='SALE') {
+      if (jsonObj.lineItems[0].lineItemType=='ORIGINAL') {
+        saleType="Initial Sale for " + jsonObj.vendor;    
+      } else {
+        saleType="Upsell"; 
+      }
+  } else if (jsonObj.transactionType=='RFND') {
+      saleType="Refund"; 
   } else {
-      saleType="Upsell"; 
+      saleType = "Unknown"; 
   };
 
 //  console.log("ok");

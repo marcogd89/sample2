@@ -1,5 +1,5 @@
 applications:
-  - name: jh-human-api
+  - name: CB-Slack-Notify
     memory: 128M
     instances: 1
     buildpack: nodejs_buildpack
