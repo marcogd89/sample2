@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/76e463ee-e292-43cf-ad9e-2ed9f36b0dd7/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/CBNotifier2",
+    "appService.deploySubpath": ""
+}

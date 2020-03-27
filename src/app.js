@@ -14,9 +14,19 @@ app.use(cors());
 
 app.use('/', indexRouter);
 
+
+
+
+
+
+
+
 // catch 404 errors
 app.use((req, res) => {
   res.status(404).json({error: 'That endpoint does not exist.'});
 });
+
+
+
 
 module.exports = app;
