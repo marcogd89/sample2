@@ -160,11 +160,14 @@ router.post('/CBNotification', async (req, res) => {
   //   .container(containerId)
   //   .items.upsert(jsonStr)
   // console.log(`Created family item with id:\n${Date.now()}\n`)
-//console.log(`{Notification : ${jsonStr}}`);
+//console.log(`${jsonStr}`);
+    //delete jsonObj["transactionTime"];
+
     createNotificationItem(jsonObj)
     .then(() => {
       var response = sendNotification(jsonStr, jsonObj);
-      res.status(200).json(response.data);
+      //console.log(response.status);
+      res.status(200).json("OK");
     
       
 
@@ -233,7 +236,7 @@ router.post('/CBNotification', async (req, res) => {
 });
 
 
-async function sendNotification(jsonStr, jsonObj,res){
+async function sendNotification(jsonStr, jsonObj){
   const CBHOOK = (process.env.REGION="PRODUCTION") ? process.env.SLACK_WEBHOOK : process.env.WEBHOOK_TEST;
   let saleType;
   //if (jsonObj.lineItems[0].lineItemType='ORIGINAL') {
@@ -272,6 +275,16 @@ async function sendNotification(jsonStr, jsonObj,res){
           'title': 'Commission Amount (USD$)',
           'value': jsonObj.totalAccountAmount,
           'short': true
+        },
+        {
+          'title': 'Receipt',
+          'value': jsonObj.receipt,
+          'short': true
+        },
+        {
+          'title': 'Attempt',
+          'value': jsonObj.attemptCount,
+          'short': true
         }
       ]
     }]
@@ -282,6 +295,7 @@ async function sendNotification(jsonStr, jsonObj,res){
   try {
     logger.info(CBHOOK, requestBody);
     response = await axios.post(CBHOOK, requestBody);
+    console.log(response);
     return response;
     //res.status(response.status).json(response.data);
   } catch (error) {
