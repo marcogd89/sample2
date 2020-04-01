@@ -267,6 +267,10 @@ async function sendNotification(jsonStr, jsonObj){
             'short': false 
         },
         {
+          'title': 'Receipt',
+          'value': jsonObj.receipt,
+          'short': true
+        },        {
           'title': 'Product', // Custom field
           'value': jsonObj.lineItems[0].productTitle, // Custom value
           'short': false // long fields will be full width
@@ -277,11 +281,15 @@ async function sendNotification(jsonStr, jsonObj){
           'short': true
         },
         {
-          'title': 'Receipt',
-          'value': jsonObj.receipt,
+          'title': 'Country',
+          'value': jsonObj.customer.billing.address.country,
           'short': true
-        },
+        },        
         {
+          'title': 'State',
+          'value': jsonObj.customer.billing.address.state,
+          'short': true
+        },          {
           'title': 'Attempt',
           'value': jsonObj.attemptCount,
           'short': true
@@ -295,7 +303,7 @@ async function sendNotification(jsonStr, jsonObj){
   try {
     logger.info(CBHOOK, requestBody);
     response = await axios.post(CBHOOK, requestBody);
-    console.log(response);
+    //console.log(response);
     return response;
     //res.status(response.status).json(response.data);
   } catch (error) {
