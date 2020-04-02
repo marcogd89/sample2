@@ -142,8 +142,11 @@ router.get('/CBNotification', (req, res) => {
 
 /* GET index route */
 router.post('/CBNotification', async (req, res) => {
+  handler(req,res);
+});
 
-  
+async function handler(req,res) {
+  const CBHOOK = (process.env.REGION="PRODUCTION") ? process.env.SLACK_WEBHOOK : process.env.WEBHOOK_TEST;
   const reqbody = processIN(req.body);
   logger.info(`${reqbody}`);
   
@@ -151,93 +154,50 @@ router.post('/CBNotification', async (req, res) => {
   var jsonStr = JSON.stringify(jsonObj);
   salesLogger.info(`${jsonStr}`);
 
-/**
- * Create Notification item if it does not exist
- */
+  let requestBody;
+  let success = 'false';
+  if (createNotificationItem(jsonObj)) {
+    success='true';
+    requestBody = prepNotification(jsonObj);
+  } else {
+    res.status(500).json("error");
+  }
 
-  // await client
-  //   .database(databaseId)
-  //   .container(containerId)
-  //   .items.upsert(jsonStr)
-  // console.log(`Created family item with id:\n${Date.now()}\n`)
-//console.log(`${jsonStr}`);
-    //delete jsonObj["transactionTime"];
+    // .then(() => {
+    //   //console.log(body);
+    // })
+    // .catch(error => {
+    //   console.log(error);
+    //   exit(`Completed with error ${JSON.stringify()}`)
+    //   res.status(500).json(error);
+    // })
 
-    createNotificationItem(jsonObj)
-    .then(() => {
-      var response = sendNotification(jsonStr, jsonObj);
-      //console.log(response.status);
-      res.status(200).json("OK");
     
-      
 
-    })
-    .catch(error => {
-      console.log(error);
-      exit(`Completed with error ${JSON.stringify()}`)
-      res.status(500).json(error);
-    })
+    if (success="true") {
+          // console.log(success);
+          // console.log(CBHOOK);
+          // console.log(requestBody);
+          try {
+
+            logger.info(CBHOOK, requestBody);
+            let response = await axios.post(CBHOOK, requestBody);
+            //console.log(response);
+            res.status(response.status).json(response.data);
+          } catch (error) {
+            console.log(error.message);
+            res.status(500).json(error.message);
+          }
+        }
+///
     
-        // let saleType;
-        // //if (jsonObj.lineItems[0].lineItemType='ORIGINAL') {
-        // logger.info(`${jsonObj.transactionType}`);
-        // if (jsonObj.transactionType=='SALE') {
-        //     if (jsonObj.lineItems[0].lineItemType=='ORIGINAL') {
-        //       saleType="Initial Sale for " + jsonObj.vendor;    
-        //     } else {
-        //       saleType="Upsell"; 
-        //     }
-        // } else if (jsonObj.transactionType=='RFND') {
-        //     saleType="Refund"; 
-        // } else {
-        //     saleType = "Unknown"; 
-        // };
 
 
-        // const requestBody = {
-        //   'username': 'CB Notification for ' + jsonObj.affiliate, // This will appear as user name who posts the message
-        //   'text': saleType, // text
-        //   'icon_emoji': ':bangbang:', // User icon, you can also use custom icons here
-        //   'attachments': [{ // this defines the attachment block, allows for better layout usage
-        //     'color': '#eed140', // color of the attachments sidebar.
-        //     'fields': [ // actual fields
-        //       {
-        //           'title': 'Account',
-        //           'value': jsonObj.affiliate,
-        //           'short': false 
-        //       },
-        //       {
-        //         'title': 'Product', // Custom field
-        //         'value': jsonObj.lineItems[0].productTitle, // Custom value
-        //         'short': false // long fields will be full width
-        //       },
-        //       {
-        //         'title': 'Commission Amount (USD$)',
-        //         'value': jsonObj.totalAccountAmount,
-        //         'short': true
-        //       }
-        //     ]
-        //   }]
-        // };
-
-        // let response;
-
-        // try {
-        //   logger.info(CBHOOK, requestBody);
-        //   response = await axios.post(CBHOOK, requestBody);
-        //   res.status(response.status).json(response.data);
-        // } catch (error) {
-        //   res.status(500).json(error.message);
-        // }
-
-        
+}
 
 
-});
-
-
-async function sendNotification(jsonStr, jsonObj){
-  const CBHOOK = (process.env.REGION="PRODUCTION") ? process.env.SLACK_WEBHOOK : process.env.WEBHOOK_TEST;
+function prepNotification(jsonObj){
+  
   let saleType;
   //if (jsonObj.lineItems[0].lineItemType='ORIGINAL') {
   logger.info(`${jsonObj.transactionType}`);
@@ -298,19 +258,20 @@ async function sendNotification(jsonStr, jsonObj){
     }]
   };
 
-  let response;
+  return requestBody;
+  // let response;
 
-  try {
-    logger.info(CBHOOK, requestBody);
-    response = await axios.post(CBHOOK, requestBody);
-    //console.log(response);
-    return response;
-    //res.status(response.status).json(response.data);
-  } catch (error) {
-    //res.status(500).json(error.message);
-    console.log(error.message);
-    return error.message;
-  }
+  // try {
+  //   logger.info(CBHOOK, requestBody);
+  //   response = await axios.post(CBHOOK, requestBody);
+  //   //console.log(response);
+  //   return response;
+  //   //res.status(response.status).json(response.data);
+  // } catch (error) {
+  //   //res.status(500).json(error.message);
+  //   console.log(error.message);
+  //   return error.message;
+  // }
 
 
 
