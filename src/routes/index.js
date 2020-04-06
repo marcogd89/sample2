@@ -134,6 +134,36 @@ async function createNotificationItem(itemBody) {
 }
 
 
+/**
+ * Query for record 
+ */
+async function FindIPN(itemBody) {
+  let result = false;
+  // const { item } = await client
+  // .database(databaseId)
+  // .container(containerId)
+  let database = client.database(databaseId);
+  let container = database.container(containerId);
+
+  // query to return all items
+  const querySpec = {
+    query: `SELECT * from c where c.receipt='${itemBody.receipt}'`
+  };
+
+  const { resources: items } = await container.items
+    .query(querySpec)
+    .fetchAll();
+
+    items.forEach(item => {
+      result=true;
+      console.log(`Foundrecord:${item.receipt} - ${item.vendor}`);
+    });
+    return result;
+}
+
+
+
+
 
 /* GET index route */
 router.get('/CBNotification', (req, res) => {
@@ -156,40 +186,37 @@ async function handler(req,res) {
 
   let requestBody;
   let success = 'false';
-  if (createNotificationItem(jsonObj)) {
-    success='true';
-    requestBody = prepNotification(jsonObj);
-  } else {
-    res.status(500).json("error");
-  }
+  let cont=  await  FindIPN(jsonObj);
 
-    // .then(() => {
-    //   //console.log(body);
-    // })
-    // .catch(error => {
-    //   console.log(error);
-    //   exit(`Completed with error ${JSON.stringify()}`)
-    //   res.status(500).json(error);
-    // })
+    console.log(cont);
 
-    
+  if (!cont){
+    console.log("not found")
+    if (createNotificationItem(jsonObj)) {
+      success='true';
+      requestBody = prepNotification(jsonObj);
+    } else {
+      res.status(500).json("error");
+    }
 
     if (success="true") {
-          // console.log(success);
-          // console.log(CBHOOK);
-          // console.log(requestBody);
-          try {
+      // console.log(success);
+      // console.log(CBHOOK);
+      // console.log(requestBody);
+      try {
 
-            logger.info(CBHOOK, requestBody);
-            let response = await axios.post(CBHOOK, requestBody);
-            //console.log(response);
-            res.status(response.status).json(response.data);
-          } catch (error) {
-            console.log(error.message);
-            res.status(500).json(error.message);
-          }
-        }
-///
+        logger.info(CBHOOK, requestBody);
+        let response = await axios.post(CBHOOK, requestBody);
+        //console.log(response);
+        res.status(response.status).json(response.data);
+      } catch (error) {
+        console.log(error.message);
+        res.status(500).json(error.message);
+      }
+    }
+  } else {
+    res.status(200).json("ok");
+  }
     
 
 
