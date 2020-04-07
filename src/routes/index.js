@@ -167,7 +167,7 @@ async function FindIPN(itemBody) {
 
 /* GET index route */
 router.get('/CBNotification', (req, res) => {
-  res.status(200).json({title: 'CBNotification'});
+  res.status(200).json({title: 'CBNotification Service For Marco'});
 });
 
 /* GET index route */
