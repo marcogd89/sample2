@@ -230,7 +230,7 @@ function prepNotification(jsonObj){
   logger.info(`${jsonObj.transactionType}`);
   if (jsonObj.transactionType=='SALE') {
       if (jsonObj.lineItems[0].lineItemType=='ORIGINAL') {
-        saleType="Initial Sale for " + jsonObj.vendor;    
+        saleType="New Sale for " + jsonObj.vendor;    
       } else {
         saleType="Upsell"; 
       }
