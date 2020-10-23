@@ -167,6 +167,16 @@ router.post('/MaxBountyNotification', async (req, res) => {
   MBhandler(req,res);
 });
 
+/* GET index route */
+router.post('/MaxWebNotification', async (req, res) => {
+  MWhandler(req,res);
+});
+
+/* GET index route */
+router.post('/DigiNotification', async (req, res) => {
+  digiHandler(req,res);
+});
+
 
 /* GET index route */
 router.get('/CBNotification', (req, res) => {
@@ -177,6 +187,131 @@ router.get('/CBNotification', (req, res) => {
 router.post('/CBNotification', async (req, res) => {
   handler(req,res);
 });
+
+
+async function digiHandler(req,res) {
+  const CBHOOK = (process.env.REGION="PRODUCTION") ? process.env.SLACK_WEBHOOK : process.env.WEBHOOK_TEST;
+  //const reqbody = processIN(req.body);
+  //logger.info(`${S1}`);
+  
+  let requestBody;
+//  let success = 'false';
+ // let cont=  await  FindIPN(jsonObj);
+
+    console.log(`${req.query.S1}`);
+
+    requestBody = prepDigiNotification(`${req.query.clickid}`,`${req.query.status}`,`${req.query.revenue}`,`${req.query.transtype}`,`${req.query.merchid}`,`${req.query.productid}`,`${req.query.sid1}`,`${req.query.ordertype}`);
+
+    //if (success="true") {
+      // console.log(success);
+      // console.log(CBHOOK);
+      console.log(requestBody);
+      try {
+
+        logger.info(CBHOOK, requestBody);
+        let response = await axios.post(CBHOOK, requestBody);
+        //console.log(response);
+        //res.status(response.status).json(response.data);
+      } catch (error) {
+        console.log(error.message);
+        //res.status(500).json(error.message);
+      }
+   // }
+
+}
+
+
+function prepDigiNotification(clickid, status, revenue, transtype, merchid, productid, sid1, ordertype){
+  
+  let saleType;
+  //if (jsonObj.lineItems[0].lineItemType='ORIGINAL') {
+  //logger.info(`${jsonObj.transactionType}`);
+
+
+  saleType=ordertype + " for " + productid;    
+
+
+  const requestBody = {
+    'username': 'Digi Notification', // This will appear as user name who posts the message
+    'text': transtype, // text
+    'icon_emoji': ':bangbang:', // User icon, you can also use custom icons here
+    'attachments': [{ // this defines the attachment block, allows for better layout usage
+      'color': '#eed140', // color of the attachments sidebar.
+      'fields': [ // actual fields
+        {
+            'title': 'Account',
+            'value': '',
+            'short': false 
+        },
+        {
+          'title': 'Receipt',
+          'value': '',
+          'short': true
+        },        {
+          'title': 'Product', // Custom field
+          'value': productid, // Custom value
+          'short': false // long fields will be full width
+        },
+        {
+          'title': 'Commission Amount (USD$)',
+          'value': revenue,
+          'short': true
+        }
+      ]
+    }]
+  };
+
+  return requestBody;
+  // let response;
+
+  // try {
+  //   logger.info(CBHOOK, requestBody);
+  //   response = await axios.post(CBHOOK, requestBody);
+  //   //console.log(response);
+  //   return response;
+  //   //res.status(response.status).json(response.data);
+  // } catch (error) {
+  //   //res.status(500).json(error.message);
+  //   console.log(error.message);
+  //   return error.message;
+  // }
+
+
+
+}
+
+
+async function MWhandler(req,res) {
+  const CBHOOK = (process.env.REGION="PRODUCTION") ? process.env.SLACK_WEBHOOK : process.env.WEBHOOK_TEST;
+  //const reqbody = processIN(req.body);
+  //logger.info(`${S1}`);
+  
+  let requestBody;
+//  let success = 'false';
+ // let cont=  await  FindIPN(jsonObj);
+
+    console.log(`${req.query.S1}`);
+
+    requestBody = prepMBNotification(`${req.query.S1}`,`${req.query.S2}`,`${req.query.S3}`,`${req.query.S4}`,`${req.query.S5}`,`${req.query.offid}`,`${req.query.ip}`,`${req.query.Rate}`);
+
+    //if (success="true") {
+      // console.log(success);
+      // console.log(CBHOOK);
+      console.log(requestBody);
+      try {
+
+        logger.info(CBHOOK, requestBody);
+        let response = await axios.post(CBHOOK, requestBody);
+        //console.log(response);
+        //res.status(response.status).json(response.data);
+      } catch (error) {
+        console.log(error.message);
+        //res.status(500).json(error.message);
+      }
+   // }
+
+}
+
 
 
 async function MBhandler(req,res) {
