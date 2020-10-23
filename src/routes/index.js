@@ -211,7 +211,7 @@ async function digiHandler(req,res) {
         logger.info(CBHOOK, requestBody);
         let response = await axios.post(CBHOOK, requestBody);
         //console.log(response);
-        res.status(response.status).json(response.data);
+        res.status(200).json(response.data);
       } catch (error) {
         console.log(error.message);
         res.status(500).json(error.message);
