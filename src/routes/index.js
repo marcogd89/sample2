@@ -177,6 +177,15 @@ router.post('/DigiNotification', async (req, res) => {
   digiHandler(req,res);
 });
 
+/* GET index route */
+router.get('/ABNotification', async (req, res) => {
+  digiHandler(req,res);
+});
+
+/* GET index route */
+router.get('/DigiNotification', async (req, res) => {
+  digiHandler(req,res);
+});
 
 /* GET index route */
 router.get('/CBNotification', (req, res) => {
