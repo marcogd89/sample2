@@ -237,12 +237,12 @@ function prepDigiNotification(clickid, status, revenue, transtype, merchid, prod
   //logger.info(`${jsonObj.transactionType}`);
 
 
-  saleType=ordertype + " for " + productid;    
+  saleType = ordertype + " for " + productid;    
 
 
   const requestBody = {
     'username': 'Digi Notification', // This will appear as user name who posts the message
-    'text': transtype, // text
+    'text': saleType, // text
     'icon_emoji': ':bangbang:', // User icon, you can also use custom icons here
     'attachments': [{ // this defines the attachment block, allows for better layout usage
       'color': '#eed140', // color of the attachments sidebar.
@@ -477,6 +477,7 @@ function prepNotification(jsonObj){
       saleType = "Unknown"; 
   };
 
+  saleType = saleType + "(" + jsonObj.totalAccountAmount + ")";
 
   const requestBody = {
     'username': 'CB Notification for ' + jsonObj.affiliate, // This will appear as user name who posts the message
