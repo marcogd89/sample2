@@ -237,7 +237,7 @@ function prepDigiNotification(clickid, status, revenue, transtype, merchid, prod
   //logger.info(`${jsonObj.transactionType}`);
 
 
-  saleType = ordertype + " for " + productid;    
+  saleType = ordertype + " for " + merchid + "(" + revenue + ")";    
 
 
   const requestBody = {
