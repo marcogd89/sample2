@@ -194,7 +194,7 @@ router.get('/SlackNotification', async (req, res) => {
 
 
 /* GET index route */
-router.get('/CBNotification', (req, res) => {
+router.post('/CBNotification', (req, res) => {
   res.status(200).json({title: 'CBNotification Service For Marco'});
 });
 
