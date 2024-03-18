@@ -188,13 +188,13 @@ router.get('/DigiNotification', async (req, res) => {
 });
 
 /* GET index route */
-router.get('/SlackNotification', async (req, res) => {
+router.post('/SlackNotification', async (req, res) => {
   genericNotification(req,res);
 });
 
 
 /* GET index route */
-router.post('/CBNotification', (req, res) => {
+router.get('/CBNotification', (req, res) => {
   res.status(200).json({title: 'CBNotification Service For Marco'});
 });
 
