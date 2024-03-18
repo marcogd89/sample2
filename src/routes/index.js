@@ -188,6 +188,12 @@ router.get('/DigiNotification', async (req, res) => {
 });
 
 /* GET index route */
+router.get('/SlackNotification', async (req, res) => {
+  genericNotification(req,res);
+});
+
+
+/* GET index route */
 router.get('/CBNotification', (req, res) => {
   res.status(200).json({title: 'CBNotification Service For Marco'});
 });
@@ -196,6 +202,39 @@ router.get('/CBNotification', (req, res) => {
 router.post('/CBNotification', async (req, res) => {
   handler(req,res);
 });
+
+
+async function genericNotification(req, res){
+
+  const CBHOOK = (process.env.REGION="PRODUCTION") ? process.env.SLACK_WEBHOOK : process.env.WEBHOOK_TEST;
+
+  const requestBody = {
+    'username': 'Notification', // This will appear as user name who posts the message
+    'text': req.query, // text
+    'icon_emoji': ':bangbang:', // User icon, you can also use custom icons here
+    'attachments': [{ // this defines the attachment block, allows for better layout usage
+      'color': '#eed140', // color of the attachments sidebar.
+      'fields': [ // actual fields
+        {
+            'title': 'Main',
+            'value': '',
+            'short': false 
+        }
+      ]
+    }]
+  };
+  
+  try {
+    logger.info(CBHOOK, requestBody);
+    let response = await axios.post(CBHOOK, requestBody);
+    //console.log(response);
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json(error.message);
+  }
+
+}
 
 
 async function digiHandler(req,res) {
