@@ -488,7 +488,10 @@ function prepMBNotification(S1, S2, S3, S4, S5, OFFID, IP, RATE){
 function prepNotification(jsonObj){
   
   let saleType;
+  
+  //if (jsonObj.lineItems[0].lineItemType='ORIGINAL') {  
   //if (jsonObj.lineItems[0].lineItemType='ORIGINAL') {
+    //gdfgdsfgfd
   logger.info(`${jsonObj.transactionType}`);
   if (jsonObj.transactionType=='SALE') {
       if (jsonObj.lineItems[0].lineItemType=='ORIGINAL' || jsonObj.lineItems[0].lineItemType=='STANDARD') {
